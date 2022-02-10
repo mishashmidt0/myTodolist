@@ -1,0 +1,15 @@
+.textInput {
+    border: solid 2px red;
+}
+
+.textError {
+    color: red;
+}
+
+.completeTask {
+    opacity: 0.5;
+}
+
+.activeButton {
+    background-color: #93ffe8;
+}
