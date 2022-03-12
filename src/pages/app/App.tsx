@@ -12,8 +12,10 @@ function App() {
 
     const todolistId1 = v1();
     const todolistId2 = v1();
+
     type TaskObjType = { [key: string]: PropsStyleForTask[] }
-    let [taskObj, setTaskObj] = useState<TaskObjType>({
+
+    let [ObjTasks, setTaskObj] = useState<TaskObjType>({
         [todolistId1]: [
             {id: v1(), title: 'HTML&CSS', isDone: true},
             {id: v1(), title: 'TypeScrypt', isDone: false},
@@ -35,11 +37,10 @@ function App() {
     ]);
 
     function removeTask(id: string, todolistId: string) {
-        let tasks = taskObj[todolistId];
-        taskObj[todolistId] = tasks.filter((el) => el.id !== id)
-        setTaskObj({...taskObj})
+        let tasks = ObjTasks[todolistId];
+        ObjTasks[todolistId] = tasks.filter((el) => el.id !== id)
+        setTaskObj({...ObjTasks})
     }
-
 
     function changeFilter(value: PropsTypeForFilter, todolistId: string) {
         let todolist = todolists.find(tl => tl.id === todolistId);
@@ -51,22 +52,22 @@ function App() {
 
     function addTask(text: string, todolistId: string) {
         const newTask: PropsStyleForTask = {id: v1(), title: text, isDone: false};
-        taskObj[todolistId] = [newTask, ...taskObj[todolistId]];
-        setTaskObj({...taskObj})
+        ObjTasks[todolistId] = [newTask, ...ObjTasks[todolistId]];
+        setTaskObj({...ObjTasks})
     }
 
     function changeStatus(id: string, isDone: boolean, todolistId: string) {
-        const tasks = taskObj[todolistId];
+        const tasks = ObjTasks[todolistId];
         const task = tasks.find((el) => id === el.id);
         if (task) task.isDone = isDone;
-        setTaskObj({...taskObj})
+        setTaskObj({...ObjTasks})
     }
 
     function removeTodolist(todolistId: string) {
         let filtedTodolist = todolists.filter(tl => tl.id !== todolistId)
         setTodolist(filtedTodolist);
-        delete taskObj[todolistId];
-        setTaskObj({...taskObj})
+        delete ObjTasks[todolistId];
+        setTaskObj({...ObjTasks})
     }
 
     function changeTodolistTitle(id: string, title: string) {
@@ -81,17 +82,17 @@ function App() {
     function addTodolist(title: string) {
         let newTodolist: TidolistType = {id: v1(), title: title, filter: "all"}
 
-        setTaskObj({...taskObj, [newTodolist.id]: []})
+        setTaskObj({...ObjTasks, [newTodolist.id]: []})
         setTodolist([newTodolist, ...todolists])
 
 
     }
 
     function chengeTaskTitle(id: string, newTitle: string, todolistId: string) {
-        const tasks = taskObj[todolistId];
+        const tasks = ObjTasks[todolistId];
         const task = tasks.find((el) => id === el.id);
         if (task) task.title = newTitle;
-        setTaskObj({...taskObj})
+        setTaskObj({...ObjTasks})
     }
 
 
@@ -115,13 +116,13 @@ function App() {
                 <Grid container spacing={5}>
                     {todolists.map((tl: TidolistType) => {
 
-                        let taskForTodolist = taskObj[tl.id];
+                        let taskForTodolist = ObjTasks[tl.id];
 
                         if (tl.filter === 'active') {
-                            taskForTodolist = taskObj[tl.id].filter((t: PropsStyleForTask) => !t.isDone)
+                            taskForTodolist = ObjTasks[tl.id].filter((t: PropsStyleForTask) => !t.isDone)
                         }
                         if (tl.filter === 'completed') {
-                            taskForTodolist = taskObj[tl.id].filter((t: PropsStyleForTask) => t.isDone)
+                            taskForTodolist = ObjTasks[tl.id].filter((t: PropsStyleForTask) => t.isDone)
                         }
 
                         return <Grid item>
