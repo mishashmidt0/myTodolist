@@ -40,15 +40,15 @@ export const todolistReducer = (todolist: Array<TidolistType>, action: todolistR
     }
 }
 
-export const RemoveTodolistAC = (id: string): RemoveTodolistAT => {
+export const removeTodolistAC = (id: string): RemoveTodolistAT => {
     return {type: "REMOVE-TODOLIST", id}
 }
-export const AddTodolistAC = (title: string): AddTodolistAT => {
+export const addTodolistAC = (title: string): AddTodolistAT => {
     return {type: 'ADD-TODOLIST', title}
 }
-export const ChangeTodolistTitleAC = (id: string, title: string): ChangeTodolistTitleAT => {
+export const changeTodolistTitleAC = (id: string, title: string): ChangeTodolistTitleAT => {
     return {type: 'CHANGE-TODOLIST-TITLE', id, title}
 }
-export const ChangeTodolistFilterAC = (id: string, filter: PropsTypeForFilter): ChangeTodolistFilterAT => {
+export const changeTodolistFilterAC = (id: string, filter: PropsTypeForFilter): ChangeTodolistFilterAT => {
     return {type: 'CHANGE-TODOLIST-FILTER', id, filter}
 }
