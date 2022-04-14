@@ -9,7 +9,7 @@ export type TidolistType = {
     filter: PropsTypeForFilter;
 }
 export type PropsTypeForFilter = 'all' | 'active' | 'completed'
-
+export type TaskObjType = { [key: string]: PropsStyleForTask[] }
 export type PropsStyleForTodolist = {
     id: string,
     heading: string,

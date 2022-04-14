@@ -1,6 +1,6 @@
 import {v1} from "uuid";
 import {PropsStyleForTask} from "../types/PropsStyle";
-import {addTaskAC, changeTaskIsDoneAC, changeTaskTitleAC, removeTaskAC, taskReducer} from "./tasks-reducer";
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, taskReducer} from "./tasks-reducer";
 
 let startState: { [key: string]: PropsStyleForTask[] }
 let todolistId1: string
@@ -20,7 +20,7 @@ beforeEach(() => {
             {id: '5', title: 'Redux', isDone: true},
         ],
         [todolistId2]: [
-            {id: '2', title: 'React', isDone: false},
+            {id: '2', title: 'React', isDone: true},
             {id: '3', title: 'Angular', isDone: false},
             {id: '4', title: 'Vue', isDone: false},
         ]
@@ -45,33 +45,34 @@ test('correct task should add item', () => {
     let newTextTitle = 'New text'
     const endState = taskReducer(startState, addTaskAC(todolistId1, newTextTitle))
 
-    expect(endState.length).toBe(3);
-    expect(endState[2].title).toBe(newTextTitle);
-    expect(endState[2].isDone).toBe(false);
+    expect(endState[todolistId1].length).toBe(6);
+    expect(endState[todolistId2].length).toBe(3);
 
+    expect(endState[todolistId1][0].title).toBe(newTextTitle);
+    expect(endState[todolistId1][0].id).toBeDefined();
+    expect(endState[todolistId1][0].isDone).toBe(false);
 })
 
-test('correct todolist should change it is name', () => {
-
-
+test('correct task should change title', () => {
     let newTextTitle = 'New text'
+    const endState = taskReducer(startState, changeTaskTitleAC(todolistId1, '1', newTextTitle))
 
-    const endState = taskReducer(startState, changeTaskTitleAC(task1, newTextTitle))
+    expect(endState[todolistId1].length).toBe(5);
+    expect(endState[todolistId2].length).toBe(3);
 
-    expect(endState.length).toBe(2);
-    expect(endState[0].title).toBe(newTextTitle);
-    expect(endState[1].title).toBe("What to by");
-    expect(endState[0].isDone).toBe(false);
-
+    expect(endState[todolistId1][0].title).toBe(newTextTitle);
+    expect(endState[todolistId2][0].title).toBe('React');
+    expect(endState[todolistId1][0].isDone).toBe(true);
 })
 
 test('correct todolist should change isDone', () => {
 
 
-    const endState = taskReducer(startState, changeTaskIsDoneAC(task1, true))
+    const endState = taskReducer(startState, changeTaskStatusAC(todolistId1, '1', false))
 
-    expect(endState.length).toBe(2);
-    expect(endState[0].isDone).toBe(true);
-    expect(endState[1].isDone).toBe(false);
+    expect(endState[todolistId1].length).toBe(5);
+    expect(endState[todolistId2].length).toBe(3);
 
+    expect(endState[todolistId1][0].isDone).toBe(false);
+    expect(endState[todolistId2][0].isDone).toBe(true);
 })
