@@ -2,13 +2,13 @@ import {PropsStyleForTask} from "../types/PropsStyle";
 import {v1} from "uuid";
 import {AddTodolistAT, RemoveTodolistAT} from "./todolist-reducer";
 
-const remove = "REMOVE-TASK"
+const removeTask = "REMOVE-TASK"
 const removeTodolist = "REMOVE-TODOLIST"
-const add = 'ADD-TASK'
+const addTask = 'ADD-TASK'
 const addTodolist = 'ADD-TODOLIST'
-const changeTitle = 'CHANGE-TASK-TITLE'
+const changeTitleTask = 'CHANGE-TASK-TITLE'
 const changeStatus = 'CHANGE-TASK-FILTER'
-
+const filterTask = 'FILTER-TASK'
 
 export type RemoveTaskAT = {
     type: "REMOVE-TASK"
@@ -32,18 +32,24 @@ export type ChangeTaskStatusAT = {
     id: string
     isDone: boolean
 }
-export type stateType = { [key: string]: PropsStyleForTask[] };
+export type tasksStateType = { [key: string]: PropsStyleForTask[] };
+export type filterTypeTask = {
+    type: 'FILTER-TASK'
+    filter: 'all' | 'active' | 'completed'
+    todolistId: string
+}
 export type taskReducerAT =
     RemoveTaskAT
     | AddTaskAT
     | ChangeTaskTitleAT
     | ChangeTaskStatusAT
     | AddTodolistAT
-    | RemoveTodolistAT;
+    | RemoveTodolistAT
+    | filterTypeTask;
 
 export const todolistId1 = v1();
 export const todolistId2 = v1();
-const initialState: stateType = {
+const initialState: tasksStateType = {
     [todolistId1]: [
         {id: v1(), title: 'HTML&CSS', isDone: true},
         {id: v1(), title: 'TypeScrypt', isDone: false},
@@ -58,11 +64,11 @@ const initialState: stateType = {
     ],
 
 }
-export const taskReducer = (task: stateType = initialState, action: taskReducerAT): { [key: string]: PropsStyleForTask[] } => {
+export const taskReducer = (task: tasksStateType = initialState, action: taskReducerAT): tasksStateType => {
     switch (action.type) {
-        case remove:
+        case removeTask:
             return {...task, [action.idTodolist]: task[action.idTodolist].filter((e) => e.id !== action.id)}
-        case add:
+        case addTask:
             return {
                 ...task,
                 [action.idTodolist]: [{
@@ -71,7 +77,7 @@ export const taskReducer = (task: stateType = initialState, action: taskReducerA
                     isDone: false
                 }, ...task[action.idTodolist]]
             }
-        case changeTitle:
+        case changeTitleTask:
             return {
                 ...task,
                 [action.idTodolist]: task[action.idTodolist].map(t => t.id === action.id ? {
@@ -80,7 +86,6 @@ export const taskReducer = (task: stateType = initialState, action: taskReducerA
                     } : t
                 )
             }
-
         case changeStatus:
             return {
                 ...task,
@@ -101,19 +106,24 @@ export const taskReducer = (task: stateType = initialState, action: taskReducerA
             return {
                 ...stateCope
             }
+        // case filterTask:
+        //     const array = [...task[action.todolistId]]
+        //     return { ...task, [action.todolistId]: array.map((el)=> action.filter == 'all'? array:
+        //             action.filter == 'active'? }
+
         default:
             return task
     }
 }
 
 export const removeTaskAC = (id: string, idTodolist: string): RemoveTaskAT => {
-    return {type: remove, id, idTodolist}
+    return {type: removeTask, id, idTodolist}
 }
 export const addTaskAC = (idTodolist: string, title: string): AddTaskAT => {
-    return {type: add, idTodolist, title}
+    return {type: addTask, idTodolist, title}
 }
 export const changeTaskTitleAC = (idTodolist: string, id: string, title: string): ChangeTaskTitleAT => {
-    return {type: changeTitle, idTodolist, id, title}
+    return {type: changeTitleTask, idTodolist, id, title}
 }
 export const changeTaskStatusAC = (idTodolist: string, id: string, isDone: boolean): ChangeTaskStatusAT => {
     return {type: changeStatus, idTodolist, id, isDone}

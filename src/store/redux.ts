@@ -12,3 +12,6 @@ const reducers = combineReducers({
 export const store = createStore(reducers)
 
 export type storeType = ReturnType<typeof reducers>
+
+// @ts-ignore
+window.store = store

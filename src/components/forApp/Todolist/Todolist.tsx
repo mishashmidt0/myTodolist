@@ -1,67 +1,84 @@
-import React from "react";
-import { PropsStyleForTodolist } from "../../../types/PropsStyle";
+import React, {useState} from "react";
+import {PropsStyleForTask, PropsStyleForTodolist, TidolistType} from "../../../types/PropsStyle";
 import s from './styleTodoList.module.css';
-import { AddItemForm } from "./AddItemForm";
-import { EditebleSpan } from "./EditebleSpan";
+import {AddItemForm} from "./AddItemForm";
+import {EditebleSpan} from "./EditebleSpan";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
-import { DeleteOutline, HighlightOff } from "@material-ui/icons";
-import { Checkbox } from "@material-ui/core";
+import {DeleteOutline, HighlightOff} from "@material-ui/icons";
+import {Checkbox} from "@material-ui/core";
+import {useDispatch, useSelector} from "react-redux";
+import {storeType} from "../../../store/redux";
+import {
+    changeTaskStatusAC,
+    removeTaskAC,
+    tasksStateType
+} from "../../../store/tasks-reducer";
 
 
-export function Todolist ( props: PropsStyleForTodolist ){
+type isActiveType = 'all' | 'active' | 'completed';
 
-	const removeTodolist = () => {
-		props.removeTodolist ( props.id );
-	};
-	const changeTodolistTitle = ( title: string ) => {
-		props.changeTodolistTitle ( props.id, title );
-	};
+export function Todolist({id}: PropsStyleForTodolist) {
 
-	const addTask = ( title: string ) => {
-		props.addTask ( title, props.id );
-	};
-	return ( <div className="App">
-		<div>
-			<h3>
-				<EditebleSpan title={ props.heading } onChange={ changeTodolistTitle }/>
+    const dispatch = useDispatch()
+    const tasks = useSelector<storeType, tasksStateType>(store => store.taskReducer)
+    const todolists = useSelector<storeType, Array<TidolistType>>(store => store.todolistReducer)
+    const [isActive, setActive] = useState<isActiveType>('all')
+    const todo = todolists.filter((el) => el.id == id)[0]
 
-				<Button onClick={ () => {
-					removeTodolist ();
-				} }><DeleteOutline/>
-				</Button>
-			</h3>
-			<AddItemForm addItem={ addTask }/>
-			<ul>
-				{ props.task.map ( ( el ) => {
+    let taskForTodolist = tasks[id];
 
-					const chengeStatusHandler = ( e: React.ChangeEvent<HTMLInputElement> ) => {
-						props.changeIsDoneInputTask ( el.id, e.currentTarget.checked, props.id );
-					};
-					const onChengeTitleHandler = ( newValue: string ) => {
-						props.chengeTaskTitle ( el.id, newValue, props.id );
-					};
+    if (todo.filter === 'active') {
+        taskForTodolist = tasks[id].filter((t: PropsStyleForTask) => !t.isDone)
+    }
+    if (todo.filter === 'completed') {
+        taskForTodolist = tasks[id].filter((t: PropsStyleForTask) => t.isDone)
+    }
 
-					return ( <li key={ el.id }>
-						<Checkbox
-							checked={ el.isDone }
-							readOnly={ true }
-							onChange={ chengeStatusHandler }
-							className={ el.isDone ? s.completeTask : '' }
-						/>
-						<EditebleSpan title={ el.title } onChange={ onChengeTitleHandler }/>
-						<Button onClick={ () => props.removeTask ( el.id, props.id ) }><HighlightOff color={ "primary" }/></Button>
-					</li> );
-				} ) }
-			</ul>
-			<div>
-				<ButtonGroup color="primary" aria-label="outlined primary button group">
-					<Button variant={ props.filter === 'all' ? 'contained' : 'text' } onClick={ () => props.changeFilter ( 'all', props.id ) }>All</Button>
-					<Button variant={ props.filter === 'active' ? 'contained' : 'text' } onClick={ () => props.changeFilter ( 'active', props.id ) }>Active</Button>
-					<Button variant={ props.filter === 'completed' ? 'contained' : 'text' } onClick={ () => props.changeFilter ( 'completed', props.id ) }>Completed</Button>
-				</ButtonGroup>
-			</div>
-		</div>
-	</div> );
+    return (<div className="App">
+        <div>
+            <h3>
+                <EditebleSpan id={id} title={todo.title}/>
+
+                <Button onClick={() => {
+                    // dispatch(removeTaskAC(id, tasks.id))
+                }}><DeleteOutline/>
+                </Button>
+            </h3>
+
+            <AddItemForm/>
+
+            <ul>
+                {taskForTodolist.map((el) => {
+
+                    return (<li key={el.id}>
+                        <Checkbox
+                            checked={el.isDone}
+                            readOnly={true}
+                            onChange={(e) => dispatch(changeTaskStatusAC(el.id, id, e.currentTarget.checked))}
+                            className={el.isDone ? s.completeTask : ''}
+                        />
+                        <EditebleSpan id={id} title={el.title}/>
+
+                        <Button onClick={() => dispatch(removeTaskAC(id, el.id))}><HighlightOff
+                            color={"primary"}/></Button>
+                    </li>);
+                })}
+            </ul>
+            <div>
+                <ButtonGroup color="primary" aria-label="outlined primary button group">
+
+                    <Button variant={isActive === 'all' ? 'contained' : 'text'}
+                            onClick={() => setActive('all')}>All</Button>
+
+                    <Button variant={isActive === 'active' ? 'contained' : 'text'}
+                            onClick={() => setActive('active')}>Active</Button>
+
+                    <Button variant={isActive === 'completed' ? 'contained' : 'text'}
+                            onClick={() => setActive('completed')}>Completed</Button>
+                </ButtonGroup>
+            </div>
+        </div>
+    </div>);
 }
 
