@@ -32,6 +32,7 @@ export type ChangeTaskStatusAT = {
     id: string
     isDone: boolean
 }
+export type stateType = { [key: string]: PropsStyleForTask[] };
 export type taskReducerAT =
     RemoveTaskAT
     | AddTaskAT
@@ -40,7 +41,24 @@ export type taskReducerAT =
     | AddTodolistAT
     | RemoveTodolistAT;
 
-export const taskReducer = (task: { [key: string]: PropsStyleForTask[] }, action: taskReducerAT): { [key: string]: PropsStyleForTask[] } => {
+export const todolistId1 = v1();
+export const todolistId2 = v1();
+const initialState: stateType = {
+    [todolistId1]: [
+        {id: v1(), title: 'HTML&CSS', isDone: true},
+        {id: v1(), title: 'TypeScrypt', isDone: false},
+        {id: v1(), title: 'JavaScrypt', isDone: true},
+        {id: v1(), title: 'React', isDone: false},
+        {id: v1(), title: 'Redux', isDone: true},
+    ],
+    [todolistId2]: [
+        {id: v1(), title: 'React', isDone: false},
+        {id: v1(), title: 'Angular', isDone: false},
+        {id: v1(), title: 'Vue', isDone: false},
+    ],
+
+}
+export const taskReducer = (task: stateType = initialState, action: taskReducerAT): { [key: string]: PropsStyleForTask[] } => {
     switch (action.type) {
         case remove:
             return {...task, [action.idTodolist]: task[action.idTodolist].filter((e) => e.id !== action.id)}
