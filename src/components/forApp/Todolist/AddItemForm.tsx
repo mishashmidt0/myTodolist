@@ -5,12 +5,13 @@ import {addTaskAC} from "../../../store/tasks-reducer";
 import {useDispatch} from "react-redux";
 import {v1} from "uuid";
 import {addTodolistAC} from "../../../store/todolist-reducer";
+import {AddItemFormPropsType} from "../../../types/PropsStyle";
 
 
-export function AddItemForm() {
+export function AddItemForm({id, action}: AddItemFormPropsType) {
     const dispatch = useDispatch()
 
-    const [newTextArea, setTextArea] = useState('');
+    const [title, setTextArea] = useState('');
     const [error, setError] = useState('');
 
     const onChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,12 +20,12 @@ export function AddItemForm() {
     };
 
     const addTask = () => {
-        if (newTextArea.trim() === '') {
+        if (title.trim() === '') {
             setError('Error, can`t add empty task');
             return;
         }
 
-        dispatch(addTodolistAC(newTextArea))
+        dispatch(action(id, title))
         setTextArea('');
     };
     const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -33,7 +34,7 @@ export function AddItemForm() {
 
     return (<div>
         <TextField
-            value={newTextArea}
+            value={title}
             variant={'outlined'}
             label={'Title'}
             onChange={onChangeText}

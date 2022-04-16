@@ -10,10 +10,12 @@ import {Checkbox} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
 import {storeType} from "../../../store/redux";
 import {
+    addTaskAC,
     changeTaskStatusAC,
     removeTaskAC,
     tasksStateType
 } from "../../../store/tasks-reducer";
+import {changeTodolistTitleAC, removeTodolistAC} from "../../../store/todolist-reducer";
 
 
 type isActiveType = 'all' | 'active' | 'completed';
@@ -24,44 +26,47 @@ export function Todolist({id}: PropsStyleForTodolist) {
     const tasks = useSelector<storeType, tasksStateType>(store => store.taskReducer)
     const todolists = useSelector<storeType, Array<TidolistType>>(store => store.todolistReducer)
     const [isActive, setActive] = useState<isActiveType>('all')
+
+
     const todo = todolists.filter((el) => el.id == id)[0]
+
 
     let taskForTodolist = tasks[id];
 
-    if (todo.filter === 'active') {
+    if (isActive === 'active') {
         taskForTodolist = tasks[id].filter((t: PropsStyleForTask) => !t.isDone)
     }
-    if (todo.filter === 'completed') {
+    if (isActive === 'completed') {
         taskForTodolist = tasks[id].filter((t: PropsStyleForTask) => t.isDone)
     }
 
     return (<div className="App">
         <div>
             <h3>
-                <EditebleSpan id={id} title={todo.title}/>
+                <EditebleSpan id={id} title={todo.title} action={changeTodolistTitleAC}/>
 
                 <Button onClick={() => {
-                    // dispatch(removeTaskAC(id, tasks.id))
+                    dispatch(removeTodolistAC(id))
                 }}><DeleteOutline/>
                 </Button>
             </h3>
 
-            <AddItemForm/>
+            <AddItemForm id={id} action={addTaskAC}/>
 
             <ul>
                 {taskForTodolist.map((el) => {
-
                     return (<li key={el.id}>
                         <Checkbox
                             checked={el.isDone}
                             readOnly={true}
-                            onChange={(e) => dispatch(changeTaskStatusAC(el.id, id, e.currentTarget.checked))}
+                            onChange={(e) => dispatch(changeTaskStatusAC(id, el.id, e.currentTarget.checked))}
                             className={el.isDone ? s.completeTask : ''}
                         />
-                        <EditebleSpan id={id} title={el.title}/>
+                        <EditebleSpan id={el.id} title={el.title} action={changeTodolistTitleAC}/>
 
-                        <Button onClick={() => dispatch(removeTaskAC(id, el.id))}><HighlightOff
-                            color={"primary"}/></Button>
+                        <Button onClick={() => dispatch(removeTaskAC(el.id, id))}>
+                            <HighlightOff color={"primary"}/>
+                        </Button>
                     </li>);
                 })}
             </ul>

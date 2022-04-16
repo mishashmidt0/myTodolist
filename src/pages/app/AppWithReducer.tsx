@@ -10,13 +10,14 @@ import {
 } from "../../store/tasks-reducer";
 import {useSelector} from "react-redux";
 import {storeType} from "../../store/redux";
+import {v1} from "uuid";
+import {addTodolistAC} from "../../store/todolist-reducer";
 
 
 function AppWithReducer() {
     const todolists = useSelector<storeType, Array<TidolistType>>(store => store.todolistReducer)
-    const tasks = useSelector<storeType, tasksStateType>(store => store.taskReducer)
-    return (
 
+    return (
         <div>
             <AppBar position="static">
                 <Toolbar>
@@ -32,7 +33,7 @@ function AppWithReducer() {
 
             <Container fixed>
                 <Grid container style={{padding: '20px'}}>
-                    <AddItemForm/>
+                    <AddItemForm id={v1()} action={addTodolistAC}/>
                 </Grid>
 
 
