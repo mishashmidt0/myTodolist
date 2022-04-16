@@ -8,7 +8,6 @@ const addTask = 'ADD-TASK'
 const addTodolist = 'ADD-TODOLIST'
 const changeTitleTask = 'CHANGE-TASK-TITLE'
 const changeStatus = 'CHANGE-TASK-FILTER'
-const filterTask = 'FILTER-TASK'
 
 export type RemoveTaskAT = {
     type: "REMOVE-TASK"
@@ -106,11 +105,6 @@ export const taskReducer = (task: tasksStateType = initialState, action: taskRed
             return {
                 ...stateCope
             }
-        // case filterTask:
-        //     const array = [...task[action.todolistId]]
-        //     return { ...task, [action.todolistId]: array.map((el)=> action.filter == 'all'? array:
-        //             action.filter == 'active'? }
-
         default:
             return task
     }

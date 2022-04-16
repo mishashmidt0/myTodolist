@@ -11,7 +11,7 @@ export type TidolistType = {
 export type PropsTypeForFilter = 'all' | 'active' | 'completed'
 export type TaskObjType = { [key: string]: PropsStyleForTask[] }
 export type PropsStyleForTodolist = {
-    id: string,
+    todolistId: string,
 }
 export type AddItemFormPropsType = {
     action: any
