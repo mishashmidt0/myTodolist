@@ -5,53 +5,47 @@ import {EditebleSpan} from "./EditebleSpan";
 import Button from "@material-ui/core/Button";
 import {DeleteOutline} from "@material-ui/icons";
 import {useDispatch, useSelector} from "react-redux";
-import {storeType} from "../../store/redux";
 import {addTaskAC,} from "../../store/tasks-reducer";
-import {changeTodolistTitleAC, removeTodolistAC} from "../../store/todolist-reducer";
+import {addTodolistAC, changeTodolistTitleAC, removeTodolistAC} from "../../store/todolist-reducer";
 import {Task} from "./Task";
 import {FilterButton} from "./FilterButton";
-import {Paper, Grid} from "@material-ui/core";
+import {storeType} from "../../store/redux";
+import {v1} from "uuid";
+import {itemReducerType} from "../../store/change-reducer";
 
 
 export type isActiveType = 'all' | 'active' | 'completed';
 
 export const Todolist = React.memo(() => {
-
     console.log('Todolist')
     const dispatch = useDispatch()
-    const todolists = useSelector<storeType, Array<TidolistType>>(store => store.todolistReducer)
-
     const [isActive, setActive] = useState<isActiveType>('all')
+    const todolists = useSelector<storeType, Array<TidolistType>>((store) => store.todolistReducer)
+    const item = useSelector<storeType, itemReducerType>((store) => store.itemReducer)
 
-    return (
-        <div>
-            <Grid item>
-                <Paper style={{padding: '10px'}}>
+    return (<div>
+            {todolists.map((todolist) => {
+                return (
+                    <div key={v1()}>
+                        <h3>
+                            <EditebleSpan id={todolist.id} title={todolist.title} action={changeTodolistTitleAC}/>
 
-                    {todolists.map((todolist: TidolistType, index) => {
-                        debugger
-                        return (<div key={index}>
-                                <h3>
-                                    <EditebleSpan id={todolist.id} title={todolist.title}
-                                                  action={changeTodolistTitleAC}/>
+                            <Button onClick={() => {
+                                dispatch(removeTodolistAC(todolist.id))
+                            }}>
+                                <DeleteOutline/>
+                            </Button>
+                        </h3>
 
-                                    <Button onClick={() => {
-                                        dispatch(removeTodolistAC(todolist.id))
-                                    }}>
-                                        <DeleteOutline/>
-                                    </Button>
-                                </h3>
+                        <AddItemForm id={todolist.id} action={()=>dispatch(addTodolistAC(todolist.id, item.title))}/>
 
-                                <AddItemForm id={todolist.id} action={addTaskAC}/>
+                        <Task todolistId={todolist.id} filter={isActive}/>
 
-                                <Task todolistId={todolist.id} filter={isActive}/>
+                        <FilterButton filter={isActive} setFilter={setActive}/>
+                    </div>)
+            })
 
-                                <FilterButton filter={isActive} setFilter={setActive}/>
-                            </div>
-                        )
-                    })}
-                </Paper>
-            </Grid>)
-        </div>)
+            }</div>
+    )
 })
 

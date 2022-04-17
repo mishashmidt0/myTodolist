@@ -1,42 +1,44 @@
 import React, {useState} from "react";
 import {Grid, IconButton, TextField} from "@material-ui/core";
 import {ControlPoint} from "@material-ui/icons";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AddItemFormPropsType} from "../../types/PropsStyle";
+import {storeType} from "../../store/redux";
+import {changeTitle, itemReducerType} from "../../store/change-reducer";
 
 
-export const AddItemForm = React.memo(({id, action}: AddItemFormPropsType) => {
-    console.log("AddItemForm")
+export const AddItemForm = React.memo(({action}: AddItemFormPropsType) => {
+
     const dispatch = useDispatch()
+    const item = useSelector<storeType, itemReducerType>((store) => store.itemReducer)
 
-    const [title, setTextArea] = useState('');
     const [error, setError] = useState('');
 
     const onChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
         setError('');
-        setTextArea(e.currentTarget.value);
+        dispatch(changeTitle(e.currentTarget.value));
     };
 
     const addTask = () => {
-        if (title.trim() === '') {
+        if (item.title.trim() === '') {
             setError('Error, can`t add empty task');
             return;
         }
-
-        dispatch(action(id, title))
-        setTextArea('');
+        action()
+        dispatch(changeTitle(''));
     };
 
     const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') addTask();
     };
 
+
     return (<div>
 
         <Grid container style={{padding: '20px'}}>
 
             <TextField
-                value={title}
+                value={item.title}
                 variant={'outlined'}
                 label={'Title'}
                 onChange={onChangeText}

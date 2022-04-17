@@ -1,5 +1,6 @@
 import {PropsTypeForFilter, TidolistType} from "../types/PropsStyle";
 import {todolistId1, todolistId2} from "./tasks-reducer";
+import {v1} from "uuid";
 
 
 export type RemoveTodolistAT = {
@@ -32,7 +33,7 @@ export const todolistReducer = (todolist: Array<TidolistType> = initialState, ac
         case "REMOVE-TODOLIST":
             return todolist.filter((e) => e.id !== action.id)
         case 'ADD-TODOLIST':
-            return [{id: action.id, title: action.title as string, filter: 'all'}, ...todolist]
+            return [{id: v1(), title: action.title as string, filter: 'all'}, ...todolist]
         case 'CHANGE-TODOLIST-TITLE':
             return [...todolist.map((e) => e.id === action.id ? {...e, title: action.title as string} : e)]
         case 'CHANGE-TODOLIST-FILTER':
@@ -48,12 +49,15 @@ export const todolistReducer = (todolist: Array<TidolistType> = initialState, ac
 export const removeTodolistAC = (id: string): RemoveTodolistAT => {
     return {type: "REMOVE-TODOLIST", id}
 }
+
 export const addTodolistAC = (id: string, title: string): AddTodolistAT => {
     return {type: 'ADD-TODOLIST', title, id}
 }
+
 export const changeTodolistTitleAC = (id: string, title: string): ChangeTodolistTitleAT => {
     return {type: 'CHANGE-TODOLIST-TITLE', id, title}
 }
+
 export const changeTodolistFilterAC = (id: string, filter: PropsTypeForFilter): ChangeTodolistFilterAT => {
     return {type: 'CHANGE-TODOLIST-FILTER', id, filter}
 }

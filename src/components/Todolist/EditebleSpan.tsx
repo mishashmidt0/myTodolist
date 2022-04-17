@@ -5,6 +5,7 @@ import {TextField} from "@material-ui/core";
 
 export const EditebleSpan = React.memo(({id, title, action}: EditebleSpanPropsType) => {
         console.log('EditebleSpan')
+
         let [editMode, setEditMode] = useState<boolean>(false);
         let [titleH, setTitle] = useState(title);
 
