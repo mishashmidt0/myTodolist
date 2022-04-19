@@ -3,8 +3,7 @@ import {EditebleSpanPropsType} from "../../types/PropsStyle";
 import {TextField} from "@material-ui/core";
 
 
-export const EditebleSpan = React.memo(({id, title, action}: EditebleSpanPropsType) => {
-        console.log('EditebleSpan')
+export const EditebleSpan = React.memo(({id, title, dispatch}: EditebleSpanPropsType) => {
 
         let [editMode, setEditMode] = useState<boolean>(false);
         let [titleH, setTitle] = useState(title);
@@ -13,7 +12,7 @@ export const EditebleSpan = React.memo(({id, title, action}: EditebleSpanPropsTy
             setEditMode(true)
         }
         const activateViewMode = () => {
-            action(id, title)
+            dispatch(id, title)
             setEditMode(false)
         }
         const onChangeTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +20,7 @@ export const EditebleSpan = React.memo(({id, title, action}: EditebleSpanPropsTy
         }
         const onkeypress = (e: KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter') {
-                action(id, title)
+                dispatch(id, title)
                 setEditMode(false)
             }
         }

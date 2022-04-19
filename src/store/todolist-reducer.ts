@@ -29,11 +29,16 @@ const initialState: Array<TidolistType> = [
     {id: todolistId2, title: 'My skills in programm framwork', filter: 'all'},
 ]
 export const todolistReducer = (todolist: Array<TidolistType> = initialState, action: todolistReducerAT): Array<TidolistType> => {
+
     switch (action.type) {
         case "REMOVE-TODOLIST":
             return todolist.filter((e) => e.id !== action.id)
         case 'ADD-TODOLIST':
-            return [{id: v1(), title: action.title as string, filter: 'all'}, ...todolist]
+
+            const arrayCopy = [...todolist]
+            arrayCopy.unshift({id: action.id, title: action.title, filter: 'all'})
+            return [...arrayCopy]
+
         case 'CHANGE-TODOLIST-TITLE':
             return [...todolist.map((e) => e.id === action.id ? {...e, title: action.title as string} : e)]
         case 'CHANGE-TODOLIST-FILTER':

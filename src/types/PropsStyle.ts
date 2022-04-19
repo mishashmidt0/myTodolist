@@ -14,11 +14,10 @@ export type PropsStyleForTodolist = {
     todolistId: string,
 }
 export type AddItemFormPropsType = {
-    action: any
-    id: string
+    dispatch: any
 }
 export type EditebleSpanPropsType = {
     title: string
     id: string
-    action: any
+    dispatch: any
 }

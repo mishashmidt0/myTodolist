@@ -1,56 +1,47 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {Checkbox} from "@material-ui/core";
-import {changeTaskStatusAC, removeTaskAC, tasksStateType} from "../../store/tasks-reducer";
+import {changeTaskStatusAC, removeTaskAC} from "../../store/tasks-reducer";
 import s from "./styleTodoList.module.css";
 import {EditebleSpan} from "./EditebleSpan";
 import {changeTodolistTitleAC} from "../../store/todolist-reducer";
 import Button from "@material-ui/core/Button";
 import {HighlightOff} from "@material-ui/icons";
 import {PropsStyleForTask} from "../../types/PropsStyle";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import style from './styleTodoList.module.css';
-import {storeType} from "../../store/redux";
-import {isActiveType} from "./Todolist";
 
-type TaskPropsType = {
+
+type task2PropsType = {
     todolistId: string
-    filter: isActiveType
+    task: PropsStyleForTask
 }
-
-export const Task = React.memo(({todolistId, filter}: TaskPropsType) => {
-    console.log('Task')
+export const Task = React.memo(({todolistId, task}: task2PropsType) => {
     const dispatch = useDispatch()
-    const tasks = useSelector<storeType, tasksStateType>(store => store.taskReducer)
 
-    let taskForTodolist = tasks[todolistId];
+    const dispatchRemoveTask = useCallback((id, todolistId) => {
+        dispatch(removeTaskAC(id, todolistId))
+    }, [dispatch])
+    const dispatchChangeTodolistTitle = useCallback((todolistId, title) => {
+        dispatch(changeTodolistTitleAC(todolistId, title))
+    }, [dispatch])
+    const dispatchChangeTaskStatus = useCallback((todolistId, taskId, status) => {
+        dispatch(changeTaskStatusAC(todolistId, taskId, status))
+    }, [dispatch])
 
-    if (filter === 'active') {
-        taskForTodolist = tasks[todolistId].filter((t: PropsStyleForTask) => !t.isDone)
-    }
-    if (filter === 'completed') {
-        taskForTodolist = tasks[todolistId].filter((t: PropsStyleForTask) => t.isDone)
-    }
+    console.log('Task')
     return (
-        <ul>
-            {taskForTodolist.map((el: PropsStyleForTask) => {
-                return (
-                    <li key={el.id} className={style.li}>
-                        <Checkbox
-                            checked={el.isDone}
-                            readOnly={true}
-                            onChange={(e) => dispatch(changeTaskStatusAC(todolistId, el.id, e.currentTarget.checked))}
-                            className={el.isDone ? s.completeTask : ''}
-                        />
-                        <EditebleSpan id={el.id} title={el.title} action={changeTodolistTitleAC}/>
+        <li key={task.id} className={style.li}>
+            <Checkbox
+                checked={task.isDone}
+                readOnly={true}
+                onChange={(e) => dispatchChangeTaskStatus(todolistId, task.id, e.currentTarget.checked)}
+                className={task.isDone ? s.completeTask : ''}
+            />
+            <EditebleSpan id={task.id} title={task.title} dispatch={dispatchChangeTodolistTitle}/>
 
-                        <Button onClick={() => dispatch(removeTaskAC(el.id, todolistId))}>
-                            <HighlightOff color={"primary"}/>
-                        </Button>
-                    </li>
-                )
-            })}
-        </ul>
+            <Button onClick={() => dispatchRemoveTask(task.id, todolistId)}>
+                <HighlightOff color={"primary"}/>
+            </Button>
+        </li>
     )
 })
-
-

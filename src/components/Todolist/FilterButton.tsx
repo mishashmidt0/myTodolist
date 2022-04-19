@@ -8,7 +8,6 @@ type FilterButtonPropsType = {
     setFilter: (title: isActiveType) => void
 }
 export const FilterButton = React.memo(({filter, setFilter}: FilterButtonPropsType) => {
-    console.log('FilterButton')
     return (
         <div>
             <ButtonGroup color="primary" aria-label="outlined primary button group">
