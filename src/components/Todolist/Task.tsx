@@ -11,11 +11,11 @@ import {useDispatch} from "react-redux";
 import style from './styleTodoList.module.css';
 
 
-type task2PropsType = {
+type taskPropsType = {
     todolistId: string
     task: PropsStyleForTask
 }
-export const Task = React.memo(({todolistId, task}: task2PropsType) => {
+export const Task = React.memo(({todolistId, task}: taskPropsType) => {
     const dispatch = useDispatch()
 
     const dispatchRemoveTask = useCallback((id, todolistId) => {

@@ -9,7 +9,7 @@ import {Wrapper} from "../components/Todolist/Wrapper";
 import {useDispatch} from "react-redux";
 
 
-function App() {
+const App = React.memo(() => {
     const dispatch = useDispatch()
     console.log('App')
 
@@ -31,7 +31,7 @@ function App() {
             </Container>
         </div>
     );
-}
+})
 
 export default App;
 
