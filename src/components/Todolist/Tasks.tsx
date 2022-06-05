@@ -1,9 +1,8 @@
-import React from "react";
-import { tasksStateType} from "../../store/tasks-reducer";
+import React, {useCallback} from "react";
+import {tasksStateType} from "../../store/tasks-reducer";
 import {PropsStyleForTask} from "../../types/PropsStyle";
 import {isActiveType} from "./Todolist";
 import {Task} from "./Task";
-
 
 
 type TaskPropsType = {
@@ -23,9 +22,14 @@ export const Tasks = React.memo(({todolistId, tasks, filter}: TaskPropsType) => 
         taskForTodolist = tasks[todolistId].filter((t: PropsStyleForTask) => t.isDone)
     }
 
+    const renderTasks = useCallback(() => taskForTodolist.map((task: PropsStyleForTask) => <Task
+            key={task.id}
+            task={task}
+            todolistId={todolistId}/>)
+        , [taskForTodolist])
+
     return (<ul>
-            {taskForTodolist.map((task: PropsStyleForTask) => <Task key={task.id} task={task}
-                                                                     todolistId={todolistId}/>)}
+            {renderTasks()}
         </ul>
     )
 })

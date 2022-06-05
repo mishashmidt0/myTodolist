@@ -20,7 +20,8 @@ type todolistTypeProps = {
 
 export const Todolist = React.memo(({todolistId, title}: todolistTypeProps) => {
 
-    console.log('Todolist')
+    console.log('Todolist11')
+
     const dispatch = useDispatch()
     const todolistTasks = useSelector<storeType, tasksStateType>(store => store.taskReducer)
 
